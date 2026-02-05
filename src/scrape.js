@@ -4,7 +4,7 @@ import cheerio from "cheerio";
 import pdf from "pdf-parse";
 import fs from "fs/promises";
 
-// DGBAS English news page that contains the sentence:
+// DGBAS English news page that contains the sentence like:
 // "In 2024, the median monthly regular earnings was NT$37,274 ..."
 const HTML_URL = "https://eng.dgbas.gov.tw/News_Content.aspx?n=4438&s=234608";
 // Example PDF from the same news (update when DGBAS changes the file path)
@@ -23,7 +23,7 @@ async function parseHtml(year) {
   const html = await res.text();
   const $ = cheerio.load(html);
   const text = $('body').text();
-  // 年初容易同頁同時提及去年與今年，雙年嘗試。
+  // Try current year, fallback to previous year (early-year posts often mention last year).
   const val = parseMedianFromText(text, year) ?? parseMedianFromText(text, year - 1);
   if (!val) throw new Error('HTML parse failed');
   return { value: val, source: { html: HTML_URL } };
@@ -44,14 +44,14 @@ async function main() {
   const year = new Date().getUTCFullYear();
   let result = null;
   try {
-    result = await parseHtml(year); // 首選 HTML
+    result = await parseHtml(year); // prefer HTML
   } catch (e1) {
-    console.warn('HTML 失敗，改抓 PDF：', e1.message);
-    result = await parsePdf(year);  // 備援 PDF
+    console.warn('HTML failed, fallback to PDF:', e1.message);
+    result = await parsePdf(year);
   }
 
   const payload = {
-    year: result.value === 37274 ? 2024 : year, // 若值確定為 37274，標註 2024 年
+    year: result.value === 37274 ? 2024 : year,
     indicator: "median_monthly_regular_earnings_all_employees",
     value: result.value,
     currency: "TWD",
@@ -62,7 +62,7 @@ async function main() {
 
   await fs.mkdir('public', { recursive: true });
   await fs.writeFile('public/median.json', JSON.stringify(payload, null, 2), 'utf8');
-  console.log('✅ Generated public/median.json');
+  console.log('Generated public/median.json');
 }
 
 main().catch(err => { console.error(err); process.exit(1); });
