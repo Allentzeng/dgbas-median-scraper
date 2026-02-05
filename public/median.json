@@ -1,0 +1,13 @@
+{
+  "year": 2024,
+  "indicator": "median_monthly_regular_earnings_all_employees",
+  "value": 37274,
+  "currency": "TWD",
+  "source": {
+    "html": "https://eng.dgbas.gov.tw/News_Content.aspx?n=4438&s=234608",
+    "pdf": "https://ws.dgbas.gov.tw/Download.ashx?u=LzAwMS9VcGxvYWQvNDY0L3JlbGZpbGUvMTA4NTQvMjM0NjA4L2VuZXdzMTEzMTIucGRm&n=ZW5ld3MxMTMxMi5wZGY%3d"
+  },
+  "last_updated_utc": null,
+  "parser_version": "1.0.0",
+  "note": "seed fallback"
+}
