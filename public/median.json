@@ -9,5 +9,5 @@
   },
   "last_updated_utc": null,
   "parser_version": "1.0.0",
-  "note": "seed fallback"
+  "note": "seed fallback; will be overwritten by Actions"
 }
