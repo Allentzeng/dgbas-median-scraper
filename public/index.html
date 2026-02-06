@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <title>台灣斬殺線生存法則</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", "Noto Sans TC", sans-serif; line-height: 1.6; padding: 40px; max-width: 720px; margin: auto; color: #222; }
+    h1 { margin-top: 0; }
+    input { padding: 10px; width: 220px; font-size: 1.1em; border: 1px solid #d0d0d0; border-radius: 8px; }
+    button { padding: 10px 16px; font-size: 1.05em; border-radius: 10px; border: 0; background: #4f46e5; color: #fff; cursor: pointer; }
+    button:hover { background: #4338ca; }
+    .panel { background: #f6f7fb; border: 1px solid #e6e8f5; border-radius: 14px; padding: 16px 18px; margin-top: 16px; }
+    .result { margin-top: 16px; font-size: 1.8em; font-weight: 800; }
+    .safe { color: #16a34a; }
+    .gg { color: #ef4444; }
+    small a { color: #4338ca; }
+  </style>
+</head>
+<body>
+  <h1>台灣斬殺線生存法則</h1>
+  <p>本頁使用 <b>主計總處</b>「<b>月平均經常性薪資中位數</b>」作為斬殺線，並會每日自動更新。</p>
+
+  <div class="panel">
+    <div id="median">中位數載入中…</div>
+    <small>
+      來源：DGBAS 英文新聞稿（HTML；若失敗改用 PDF 備援）。<br />
+      <a href="https://eng.dgbas.gov.tw/News_Content.aspx?n=4438&s=234608" target="_blank" rel="noreferrer">官方英文新聞稿</a> ·
+      <a href="https://ws.dgbas.gov.tw/Download.ashx?u=LzAwMS9VcGxvYWQvNDY0L3JlbGZpbGUvMTA4NTQvMjM0NjA4L2VuZXdzMTEzMTIucGRm&n=ZW5ld3MxMTMxMi5wZGY%3d" target="_blank" rel="noreferrer">同篇 PDF</a>
+    </small>
+  </div>
+
+  <div class="panel">
+    <label>你的《月薪金額》（新臺幣）：</label>
+    <div style="display:flex; gap:8px; margin-top:8px;">
+      <input id="salary" type="number" placeholder="例如 42000" />
+      <button onclick="check()">比一比</button>
+    </div>
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    let median = null;
+
+    async function loadMedian() {
+      try {
+        const res = await fetch("./median.json", { cache: "no-cache" });
+        const data = await res.json();
+        median = data.value;
+        document.getElementById("median").innerHTML =
+          `主計總處月平均經常性薪資中位數：<b>${median.toLocaleString()}</b> 元／月`;
+      } catch (e) {
+        document.getElementById("median").innerText = "中位數載入失敗，請稍後重試。";
+      }
+    }
+
+    function check() {
+      const v = Number(document.getElementById("salary").value);
+      if (!v || !median) return;
+
+      const el = document.getElementById("result");
+      if (v >= median) {
+        el.innerText = "高於斬殺線，SAFE!";
+        el.className = "result safe";
+      } else {
+        el.innerText = "低於斬殺線，GG!";
+        el.className = "result gg";
+      }
+    }
+
+    loadMedian();
+  </script>
+</body>
+</html>
