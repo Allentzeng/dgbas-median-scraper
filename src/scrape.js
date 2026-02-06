@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import cheerio from "cheerio";
+import {load} from "cheerio";
 import pdf from "pdf-parse";
 import fs from "fs/promises";
 
@@ -26,7 +26,7 @@ async function parseHtml(year) {
   const res = await fetch(HTML_URL);
   if (!res.ok) throw new Error(`HTML fetch failed: ${res.status}`);
   const html = await res.text();
-  const $ = cheerio.load(html);
+  const $ = load(html);
   const text = $("body").text();
   // 年初常同頁同時提去年/今年 → 嘗試 year 與 year-1
   const value = parseMedian(text, year) ?? parseMedian(text, year - 1);
