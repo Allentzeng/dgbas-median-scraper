@@ -2,7 +2,7 @@
   "name": "dgbas-median-scraper",
   "version": "1.0.0",
   "type": "module",
-  "description": "Scrape DGBAS median monthly regular earnings and publish JSON via GitHub Pages.",
+  "description": "Scrape DGBAS median monthly regular earnings (HTML with PDF fallback) and publish JSON via GitHub Pages along with a simple front-end.",
   "scripts": {
     "scrape": "node src/scrape.js"
   },
